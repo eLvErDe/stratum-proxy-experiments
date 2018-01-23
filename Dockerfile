@@ -8,12 +8,14 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 # Create PKI
+# Find/perms is for use in Mesos/Marathon...
 RUN make-cadir /root/local-pki \
     && cd /root/local-pki \
     && ln -s openssl-1.0.0.cnf openssl.cnf \
     && . ./vars \
     && ./clean-all \
-    && ./pkitool --initca
+    && ./pkitool --initca \
+    && find /root/local-pki -exec chmod 755 {} \;
 
 # Trust PKI
 RUN cp /root/local-pki/keys/ca.crt /usr/local/share/ca-certificates/local-pki.crt \
